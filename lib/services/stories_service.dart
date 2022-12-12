@@ -41,7 +41,7 @@ class StoriesService {
     try {
       final storiesQuery = await _db
           .collection(storiesPath)
-          .where('active', isEqualTo: true).where('type', isEqualTo: type)
+          .where('type', isEqualTo: type)
           .get();
       // final stories = storiesQuery.docs.map((story) => Story.fromFirestore(story, null)).toList();
       // log(storiesQuery.docs.map((story) => Story().toString()).toList()[1]);
@@ -55,6 +55,13 @@ class StoriesService {
   Future<bool> updateStory(Story story) async{
     try{
       CloudFirestore.DocumentReference reference = _db.collection(storiesPath).doc(story.id);
+      _db.runTransaction(
+            (transaction) => transaction.get(reference).then(
+              (value) => transaction.update(reference, {"name": story.name, "geoPoint": story.geoPoint, "address": story
+                  .address, "story": story.story, "active": story.active, "type": story.type,
+                "model_url":story.modelUrl}),
+        ),
+      );
       return true;
     }catch(e){
       log(e.toString());

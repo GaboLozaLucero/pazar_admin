@@ -27,4 +27,16 @@ class EditStoryController extends GetxController {
   bool get isLoading => _isLoading.value;
 
   final StoriesService _storiesService = StoriesService();
+
+  Future<bool> updateStory(Story story) async {
+    final result = await _storiesService.updateStory(story);
+    return result;
+  }
+
+  @override
+  void onReady() {
+    _selectedType.value = (story.type! == 'myth') ? 'Mito' : 'Leyenda';
+    _isActive.value = (story.active!) ? 'Activado' : 'Desactivado';
+    super.onReady();
+  }
 }
